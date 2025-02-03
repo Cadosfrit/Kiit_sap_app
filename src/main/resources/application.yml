@@ -1,0 +1,9 @@
+# Spring Boot Config 
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://ronitroshan2003:fvYyHyFjAdNuaATV@cluster0.yjrpo.mongodb.net/demouser?retryWrites=true&w=majority&appName=Cluster0
+      auto-index-creation: true
+
+server:
+  port: 8080
