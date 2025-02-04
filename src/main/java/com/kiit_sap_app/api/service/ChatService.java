@@ -36,7 +36,7 @@ public class ChatService {
         UserEntity user = userOpt.get();
 
         // Fetch all ChatMessages using the stored chat IDs
-        List<ChatMessage> chatMessages = chatMessageRepository.findAllById(user.getChatIds());
+        List<ChatMessage> chatMessages = chatMessageRepository.findAllByIdIn(user.getChatIds());
 
         // Find messages where the user is the receiver (mentorFacultyId matches username)
         List<ChatMessage> unreadMessages = chatMessages.stream()

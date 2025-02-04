@@ -31,14 +31,26 @@ public class ChatController {
         return ResponseEntity.ok(chats);
     }
 
-    @PostMapping("/send")
-    private ResponseEntity<?> send(@RequestBody ChatMessage chatMessage){
-        /*TODO: set the sender and reciever id from studentmentor and mentorstudent collections
+    @PostMapping("/student-send")
+    private ResponseEntity<?> studentSend(@RequestBody ChatMessage chatMessage){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-        ChatMessage message=new ChatMessage();
-        message.setSenderRollNo(userName);
-        message.setReceiverId(studentMentorService.getMentorIdByStudentId(userName));*/
+        chatMessage.setSenderRollNo(userName);
+        chatMessage.setReceiverId(studentMentorService.getMentorIdByStudentId(userName));
+        try {
+            chatService.sendMessage(chatMessage);
+            return ResponseEntity.ok(true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/mentor-send")
+    private ResponseEntity<?> mentorSend(@RequestBody ChatMessage chatMessage){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
+        chatMessage.setSenderRollNo(userName);
         try {
             chatService.sendMessage(chatMessage);
             return ResponseEntity.ok(true);

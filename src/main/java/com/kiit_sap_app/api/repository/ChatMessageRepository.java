@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, String> {
-    List<ChatMessage> findAllById(List<ObjectId> chatIds);
+    List<ChatMessage> findAllByIdIn(List<ObjectId> chatIds);
     // Additional query methods can be defined here if needed.
 }
 
