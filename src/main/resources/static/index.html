@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Feature Progress Tracker</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <style>
+        @keyframes spaceDrift {
+            0% {
+                background-position: 0% 0%, 40px 60px, 130px 270px;
+            }
+            100% {
+                background-position: 550px 550px, 590px 610px, 680px 820px;
+            }
+        }
+
+        @keyframes flowingGlow {
+            100% {
+                background-position: 0% 50%;
+            }
+            0% {
+                background-position: 200% 50%;
+            }
+        }
+
+        @keyframes nebulaDrift {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.1);
+            }
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        html, body {
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .space-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0f;
+            background-image:
+            radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+            radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
+            radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px),
+            radial-gradient(circle at center,
+            rgba(75, 0, 130, 0.2) 0%,
+            rgba(138, 43, 226, 0.1) 45%,
+            rgba(0, 0, 139, 0.1) 70%,
+            transparent 100%);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 200% 200%;
+            animation: spaceDrift 60s linear infinite;
+            z-index: -2;
+        }
+
+        .nebula-layer {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center,
+            transparent 0%,
+            rgba(75, 0, 130, 0.1) 30%,
+            rgba(138, 43, 226, 0.1) 60%,
+            transparent 100%);
+            animation: nebulaDrift 30s linear infinite;
+            z-index: -1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e1e1e1;
+            text-align: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        h1 {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+
+        .progress-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            height: 30px;
+            border-radius: 15px;
+            background-color: rgba(255,255,255,0.05);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 15px;
+            background: linear-gradient(90deg,
+            #4f4fff,
+            #9d4eff,
+            #4fa3ff,
+            #4f4fff
+            );
+            background-size: 200% 100%;
+            animation: flowingGlow 3s linear infinite;
+            transition: width 0.8s ease-in-out;
+            position: relative;
+            box-shadow: 0 0 30px rgba(79, 74, 255, 0.6);
+        }
+
+        .features {
+            margin-top: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 50px;
+        }
+
+        .feature-row {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-row::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.03);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .feature-row:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .feature-row:hover::before {
+            transform: translateX(0);
+        }
+
+        .feature-cell {
+            flex: 1;
+            padding: 10px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-cell button {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 24px;
+            border: none;
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-cell button:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        button.tick.highlighted {
+            background-color: #4CAF50;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.6);
+        }
+
+        button.line.highlighted {
+            background-color: #FDD835;
+            box-shadow: 0 0 30px rgba(253, 216, 53, 0.6);
+        }
+
+        button.cross.highlighted {
+            background-color: #E57373;
+            box-shadow: 0 0 30px rgba(229, 115, 115, 0.6);
+        }
+
+        #progressPercentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="space-background"></div>
+<div class="nebula-layer"></div>
+<div class="content-wrapper">
+    <div id="app">
+        <h1>Feature Progress Tracker</h1>
+        <div class="progress-container">
+            <div class="progress-bar" :style="{ width: progress + '%' }"></div>
+            <span id="progressPercentage">{{ Math.round(progress) }}%</span>
+        </div>
+        <div class="features">
+            <div v-for="(feature, index) in features" :key="index" class="feature-row">
+                <div class="feature-cell">
+                    <strong>{{ feature.name }}</strong>
+                </div>
+                <div class="feature-cell">
+                    <button @click="updateFeature(index, 'tick')" :class="['tick', { highlighted: feature.status === 'tick' }]">✔️</button>
+                </div>
+                <div class="feature-cell">
+                    <button @click="updateFeature(index, 'line')" :class="['line', { highlighted: feature.status === 'line' }]">➖</button>
+                </div>
+                <div class="feature-cell">
+                    <button @click="updateFeature(index, 'cross')" :class="['cross', { highlighted: feature.status === 'cross' }]">❌</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                features: this.loadFeatures() // Load the features from localStorage on initialization
+            };
+        },
+        computed: {
+            progress() {
+                const total = this.features.length;
+                const completed = this.features.filter(f => f.status === 'tick').length;
+                return (completed / total) * 100;
+            },
+            isEditable() {
+                // Check URL query parameter to decide mode
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('mode') === 'edit'; // If mode is 'edit', enable editing
+            }
+        },
+        methods: {
+            updateFeature(index, status) {
+                this.features[index].status = status;
+                this.saveFeatures(); // Save the updated state to localStorage
+            },
+            saveFeatures() {
+                localStorage.setItem('features', JSON.stringify(this.features));
+            },
+            loadFeatures() {
+                const savedFeatures = localStorage.getItem('features');
+                if (savedFeatures) {
+                    return JSON.parse(savedFeatures);
+                } else {
+                    // Default features if none exist in localStorage
+                    return [
+                        { name: "Class Timetable Viewer", status: "cross" },
+                        { name: "Semester Grade Report", status: "cross" },
+                        { name: "Profile Management", status: "cross" },
+                        { name: "Academic Mentor Display", status: "cross" },
+                        { name: "Mentor-Mentee Communication", status: "cross" },
+                        { name: "Grievances and Leave Application", status: "cross" },
+                        { name: "Faculty Feedback Form", status: "cross" },
+                        { name: "Attendance Details", status: "cross" },
+                        { name: "Study Material Downloads", status: "cross" }
+                    ];
+                }
+            }
+        }
+    }).mount("#app");
+</script>
+</body>
+</html>

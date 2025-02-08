@@ -4,6 +4,18 @@ spring:
     mongodb:
       uri: mongodb+srv://ronitroshan2003:fvYyHyFjAdNuaATV@cluster0.yjrpo.mongodb.net/demouser?retryWrites=true&w=majority&appName=Cluster0
       auto-index-creation: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: your-email-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 server:
   port: 8080

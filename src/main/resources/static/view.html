@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Feature Progress Tracker (View Mode)</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <style>
+        @keyframes spaceDrift {
+            0% {
+                background-position: 0% 0%, 40px 60px, 130px 270px;
+            }
+            100% {
+                background-position: 550px 550px, 590px 610px, 680px 820px;
+            }
+        }
+
+        @keyframes flowingGlow {
+            100% {
+                background-position: 0% 50%;
+            }
+            0% {
+                background-position: 200% 50%;
+            }
+        }
+
+        @keyframes nebulaDrift {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.1);
+            }
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        html, body {
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .space-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0f;
+            background-image:
+            radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+            radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
+            radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px),
+            radial-gradient(circle at center,
+            rgba(75, 0, 130, 0.2) 0%,
+            rgba(138, 43, 226, 0.1) 45%,
+            rgba(0, 0, 139, 0.1) 70%,
+            transparent 100%);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 200% 200%;
+            animation: spaceDrift 60s linear infinite;
+            z-index: -2;
+        }
+
+        .nebula-layer {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center,
+            transparent 0%,
+            rgba(75, 0, 130, 0.1) 30%,
+            rgba(138, 43, 226, 0.1) 60%,
+            transparent 100%);
+            animation: nebulaDrift 30s linear infinite;
+            z-index: -1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e1e1e1;
+            text-align: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        h1 {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+
+        .progress-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            height: 30px;
+            border-radius: 15px;
+            background-color: rgba(255,255,255,0.05);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 15px;
+            background: linear-gradient(90deg,
+            #4f4fff,
+            #9d4eff,
+            #4fa3ff,
+            #4f4fff
+            );
+            background-size: 200% 100%;
+            animation: flowingGlow 3s linear infinite;
+            transition: width 0.8s ease-in-out;
+            position: relative;
+            box-shadow: 0 0 30px rgba(79, 74, 255, 0.6);
+        }
+
+        .features {
+            margin-top: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 50px;
+        }
+
+        .feature-row {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-row::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.03);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .feature-row:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .feature-row:hover::before {
+            transform: translateX(0);
+        }
+
+        .feature-cell {
+            flex: 1;
+            padding: 10px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-cell button {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 24px;
+            border: none;
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-cell button:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        button.tick.highlighted {
+            background-color: #4CAF50;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.6);
+        }
+
+        button.line.highlighted {
+            background-color: #FDD835;
+            box-shadow: 0 0 30px rgba(253, 216, 53, 0.6);
+        }
+
+        button.cross.highlighted {
+            background-color: #E57373;
+            box-shadow: 0 0 30px rgba(229, 115, 115, 0.6);
+        }
+
+        #progressPercentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="space-background"></div>
+<div class="nebula-layer"></div>
+<div class="content-wrapper">
+    <div id="app">
+        <h1>Feature Progress Tracker</h1>
+        <div class="progress-container">
+            <div class="progress-bar" :style="{ width: progress + '%' }"></div>
+            <span id="progressPercentage">{{ Math.round(progress) }}%</span>
+        </div>
+        <div class="features">
+            <div v-for="(feature, index) in features" :key="index" class="feature-row">
+                <div class="feature-cell">
+                    <strong>{{ feature.name }}</strong>
+                </div>
+                <div class="feature-cell">
+                    <button :class="['tick', { highlighted: feature.status === 'tick' }]" disabled>✔️</button>
+                </div>
+                <div class="feature-cell">
+                    <button :class="['line', { highlighted: feature.status === 'line' }]" disabled>➖</button>
+                </div>
+                <div class="feature-cell">
+                    <button :class="['cross', { highlighted: feature.status === 'cross' }]" disabled>❌</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const { createApp } = Vue;
+
+    function csvToJson(csv) {
+        const lines = csv.trim().split("\n");
+        // Assume the first row is headers:
+        const headers = lines[0].split(",");
+        const json = [];
+        for (let i = 1; i < lines.length; i++) {
+            const currentLine = lines[i].split(",");
+            const obj = {};
+            for (let j = 0; j < headers.length; j++) {
+                // Trim whitespace in case it exists
+                obj[headers[j].trim()] = currentLine[j] ? currentLine[j].trim() : "";
+            }
+            // Only push if the row is not empty
+            if (Object.values(obj).some(val => val !== "")) {
+                json.push(obj);
+            }
+        }
+        return json;
+    }
+    createApp({
+        data() {
+            return {
+                features: [], // Initially empty until fetched from GitHub
+            };
+        },
+        mounted() {
+            if ('caches' in window) {
+                caches.keys().then(cacheNames => {
+                    cacheNames.forEach(cacheName => {
+                        caches.delete(cacheName);  // This will delete all caches
+                    });
+                });
+            }
+            // Fetch the features data from GitHub on mount
+            fetch('https://raw.githubusercontent.com/Cadosfrit/Kiit_sap_app_progress/main/data.json')
+                .then(response => response.json())
+                .then(data => {
+                this.features = data; // Assign the fetched data to the features array
+            })
+                .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+        },
+        computed: {
+            progress() {
+                const total = this.features.length;
+                const completed = this.features.filter(f => f.status === 'tick').length;
+                return (completed / total) * 100;
+            }
+        }
+    }).mount("#app");
+
+</script>
+</body>
+</html>
