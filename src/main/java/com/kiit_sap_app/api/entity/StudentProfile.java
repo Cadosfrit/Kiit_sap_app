@@ -6,7 +6,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -22,13 +24,25 @@ public class StudentProfile {
     private String programOfStudy;
     private String school;
     private int currentSemester;
-    private List<Semester> semesters;
+    private HashSet<Semester> semesters;
 
     @Data
     @NoArgsConstructor
     public static class Semester {
         private int semesterNumber;
-        private List<Subject> subjects;
+        private HashSet<Subject> subjects;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Semester semester = (Semester) o;
+            return semesterNumber == semester.semesterNumber;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(semesterNumber);
+        }
     }
 
     @Data
@@ -40,6 +54,18 @@ public class StudentProfile {
         private String academicSession;
         private String grade;
         private boolean backlogStatus;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Subject subject = (Subject) o;
+            return Objects.equals(courseId, subject.courseId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(courseId);
+        }
     }
 
     // Personal Details
