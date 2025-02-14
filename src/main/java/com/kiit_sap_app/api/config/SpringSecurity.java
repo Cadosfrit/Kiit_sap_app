@@ -41,7 +41,7 @@ public class SpringSecurity {
                                     "/chat/**"
                         ).authenticated()
                         .requestMatchers("/student-mentor/**").hasRole("ADMIN")
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
