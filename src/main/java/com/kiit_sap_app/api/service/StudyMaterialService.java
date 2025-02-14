@@ -21,3 +21,4 @@ public class StudyMaterialService {
         return studyMaterialRepository.findBySubjectNameIgnoreCase(subjectName);
     }
 }
+

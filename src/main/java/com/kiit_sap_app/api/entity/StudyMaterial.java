@@ -24,3 +24,4 @@ public class StudyMaterial {
         this.downloadLink = downloadLink;
     }
 }
+

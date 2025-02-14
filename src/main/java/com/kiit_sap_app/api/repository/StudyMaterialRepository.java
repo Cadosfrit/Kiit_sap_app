@@ -7,3 +7,4 @@ import java.util.List;
 public interface StudyMaterialRepository extends MongoRepository<StudyMaterial, String> {
     List<StudyMaterial> findBySubjectNameIgnoreCase(String subjectName);
 }
+
