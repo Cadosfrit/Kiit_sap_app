@@ -32,7 +32,7 @@ public class StudentProfileController {
      * @return ResponseEntity containing saved StudentProfile
      */
 
-    @PostMapping("/admin/student-profile")
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentProfile> saveOrUpdateProfile(@RequestBody StudentProfile studentProfile) {
         StudentProfile savedProfile = studentProfileService.saveOrUpdateProfile(studentProfile);

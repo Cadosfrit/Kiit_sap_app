@@ -50,6 +50,7 @@ public class StudentProfile {
     public static class Subject {
         private String courseId;
         private String name;
+        private String faculty_name;
         private String academicYear;
         private String academicSession;
         private String grade;
