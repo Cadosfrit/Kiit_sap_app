@@ -18,7 +18,8 @@ public class Timetable {
     @Id
     private ObjectId id;
     private String classID;
-    private List<Day> days;  // List of Days (containing a List of TimeSlots)
+    private int semesterNo;
+    private List<Day> days; // List of Days (containing a List of TimeSlots)
 
     @Data
     @NoArgsConstructor

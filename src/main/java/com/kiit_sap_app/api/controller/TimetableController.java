@@ -43,15 +43,16 @@ public class TimetableController {
             @RequestParam String classID,
             @RequestParam String day,
             @RequestParam String startTime,
-            @RequestParam String subjectName) {
-        Timetable updatedTimetable = timetableService.editTimetable(classID, day, startTime, subjectName);
+            @RequestParam String subjectName,
+            @RequestParam int semesterNo) {
+        Timetable updatedTimetable = timetableService.editTimetable(classID, day, startTime, subjectName, semesterNo);
         return ResponseEntity.ok(updatedTimetable);
     }
 
     // Endpoint to get timetable by classID (GET)
-    @GetMapping("/class/{classID}")
-    public ResponseEntity<Timetable> getTimetableByClassID(@PathVariable String classID) {
-        Timetable timetable = timetableService.getTimetableByClassID(classID);
+    @GetMapping("/class")
+    public ResponseEntity<Timetable> getTimetableByClassID(@RequestParam String classID, @RequestParam int semesterNo) {
+        Timetable timetable = timetableService.getTimetableByClassID(classID,semesterNo);
         return ResponseEntity.ok(timetable);
     }
 
@@ -61,8 +62,9 @@ public class TimetableController {
     public ResponseEntity<Timetable> deleteSub(
             @RequestParam String classID,
             @RequestParam String day,
-            @RequestParam String startTime) {
-        Timetable updatedTimetable = timetableService.deleteSubject(classID, day, startTime);
+            @RequestParam String startTime,
+            @RequestParam int semesterNo) {
+        Timetable updatedTimetable = timetableService.deleteSubject(classID, day, startTime,semesterNo);
         return ResponseEntity.ok(updatedTimetable);
     }
 }

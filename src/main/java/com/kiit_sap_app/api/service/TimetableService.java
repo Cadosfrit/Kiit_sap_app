@@ -21,9 +21,9 @@ public class TimetableService {
     }
 
     // Edit Timetable (update a specific timeslot based on classID, day, and start time)
-    public Timetable editTimetable(String classID, String day, String startTime, String subjectName) {
+    public Timetable editTimetable(String classID, String day, String startTime, String subjectName,int semesterNo) {
         // Fetch the timetable by classID
-        Optional<Timetable> timetableOptional = timetableRepository.findByClassID(classID);
+        Optional<Timetable> timetableOptional = timetableRepository.findByClassIDAndSemesterNo(classID,semesterNo);
 
         if (timetableOptional.isPresent()) {
             Timetable timetable = timetableOptional.get();
@@ -49,9 +49,9 @@ public class TimetableService {
         }
     }
 
-    public Timetable deleteSubject(String classID, String day, String startTime) {
+    public Timetable deleteSubject(String classID, String day, String startTime,int semesterNo) {
         // Fetch the timetable by classID
-        Optional<Timetable> timetableOptional = timetableRepository.findByClassID(classID);
+        Optional<Timetable> timetableOptional = timetableRepository.findByClassIDAndSemesterNo(classID,semesterNo);
 
         if (timetableOptional.isPresent()) {
             Timetable timetable = timetableOptional.get();
@@ -77,8 +77,8 @@ public class TimetableService {
         }
     }
     // Get Timetable by classID
-    public Timetable getTimetableByClassID(String classID) {
-        Optional<Timetable> timetableOptional = timetableRepository.findByClassID(classID);
+    public Timetable getTimetableByClassID(String classID,int semesterNo) {
+        Optional<Timetable> timetableOptional = timetableRepository.findByClassIDAndSemesterNo(classID,semesterNo);
         return timetableOptional.orElseThrow(() -> new IllegalArgumentException("Timetable not found for class ID: " + classID));
     }
 

@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface TimetableRepository extends MongoRepository<Timetable, ObjectId> {
 
     // Find a timetable by its classID
-    Optional<Timetable> findByClassID(String classID);
+    Optional<Timetable> findByClassIDAndSemesterNo(String classID, int semesterNo);
+
 }
