@@ -19,11 +19,12 @@ public class GrievanceController {
 
     // Submit a grievance (Student)
     @PostMapping
-    public Grievance submitGrievance(@RequestBody Grievance grievance) {
+    public Boolean submitGrievance(@RequestBody Grievance grievance) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String rollNo = authentication.getName(); // Extract roll number from authenticated user
         grievance.setRollNo(rollNo);
-        return grievanceService.submitGrievance(grievance);
+        grievanceService.submitGrievance(grievance);
+        return true;
     }
 
     // Fetch grievances of the logged-in student
