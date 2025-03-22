@@ -34,13 +34,13 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login/**","/users/**").permitAll()
+                        .requestMatchers("/login/**").permitAll()
                         .requestMatchers(
                                 "/student-profile/**",
                                 "/timetable/**",
                                     "/chat/**"
                         ).authenticated()
-                        .requestMatchers("/student-mentor/**").hasRole("ADMIN")
+                        .requestMatchers("/student-mentor/**","/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
