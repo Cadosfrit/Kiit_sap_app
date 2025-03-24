@@ -21,7 +21,7 @@ public class GrievanceService {
     private JavaMailSender mailSender;
 
     // Submit a grievance (Student)
-    public void submitGrievance(Grievance grievance) {
+    public Grievance submitGrievance(Grievance grievance) {
         grievance.setCreatedDate(new Date());
         grievance.setResolveStatus(false); // Default resolve status
 
@@ -30,6 +30,7 @@ public class GrievanceService {
 
         // Send confirmation emails
         //sendGrievanceConfirmation(grievance);
+        return savedGrievance;
     }
 
     // Fetch all grievances for a specific student (Student)
