@@ -38,7 +38,8 @@ public class SpringSecurity {
                         .requestMatchers(
                                 "/student-profile/**",
                                 "/timetable/**",
-                                    "/chat/**"
+                                    "/chat/**",
+                                "/leave-applications/**"
                         ).authenticated()
                         .requestMatchers("/student-mentor/**","/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

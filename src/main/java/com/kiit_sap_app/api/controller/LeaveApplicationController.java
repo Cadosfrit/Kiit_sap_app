@@ -31,19 +31,19 @@ public class LeaveApplicationController {
         return leaveApplicationService.getLeaveApplicationsByRollNo(authentication.getName());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Optional<LeaveApplication> updateLeaveGrantedStatus(@PathVariable String id, @RequestParam boolean status) {
+    public Optional<LeaveApplication> updateLeaveGrantedStatus(@RequestParam String id, @RequestParam boolean status) {
         return leaveApplicationService.updateLeaveGrantedStatus(id, status);
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public List<LeaveApplication> getAllLeaveApplications() {
         return leaveApplicationService.getAllLeaveApplications();
     }
 
-    @GetMapping("/admin/{rollNo}")
+    @GetMapping("/all/{rollNo}")
     @PreAuthorize("hasRole('ADMIN')")
     public List<LeaveApplication> getLeaveApplicationsByRollNo(@PathVariable String rollNo) {
         return leaveApplicationService.getLeaveApplicationsByRollNo(rollNo);
