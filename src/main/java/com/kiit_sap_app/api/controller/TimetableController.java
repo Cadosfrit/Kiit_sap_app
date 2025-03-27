@@ -2,9 +2,12 @@ package com.kiit_sap_app.api.controller;
 
 import com.kiit_sap_app.api.entity.Timetable;
 import com.kiit_sap_app.api.service.TimetableService;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,8 +54,10 @@ public class TimetableController {
 
     // Endpoint to get timetable by classID (GET)
     @GetMapping("/class")
-    public ResponseEntity<Timetable> getTimetableByClassID(@RequestParam String classID, @RequestParam int semesterNo) {
-        Timetable timetable = timetableService.getTimetableByClassID(classID,semesterNo);
+    public ResponseEntity<Timetable> getTimetableByClassID(@RequestParam int semesterNo) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String rollNo =authentication.getName();
+        Timetable timetable = timetableService.getTimetableByClassID(rollNo,semesterNo);
         return ResponseEntity.ok(timetable);
     }
 

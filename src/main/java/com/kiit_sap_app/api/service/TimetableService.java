@@ -15,6 +15,9 @@ public class TimetableService {
     @Autowired
     private TimetableRepository timetableRepository;
 
+    @Autowired
+    SectionService sectionService;
+
     // Upload Timetable (this can be used to upload a default timetable initially)
     public Timetable uploadTimetable(Timetable timetable) {
         return timetableRepository.save(timetable);  // Save the timetable in the DB
@@ -77,7 +80,8 @@ public class TimetableService {
         }
     }
     // Get Timetable by classID
-    public Timetable getTimetableByClassID(String classID,int semesterNo) {
+    public Timetable getTimetableByClassID(String rollNo, int semesterNo) {
+        String classID = sectionService.getSectionsByStudentRollNo(rollNo);
         Optional<Timetable> timetableOptional = timetableRepository.findByClassIDAndSemesterNo(classID,semesterNo);
         return timetableOptional.orElseThrow(() -> new IllegalArgumentException("Timetable not found for class ID: " + classID));
     }
